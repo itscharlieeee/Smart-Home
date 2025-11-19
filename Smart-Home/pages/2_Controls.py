@@ -1,65 +1,29 @@
 import streamlit as st
-from mqtt_utils import publish_message
+from mqtt_utils import publish_message, connect_mqtt
 
-st.title("🎛️ Controles del Sistema")
-st.write("Controla el sistema enviando comandos MQTT.")
+# Conectar al broker si no lo está
+connect_mqtt(broker="TU_BROKER", port=8883, username="TU_USUARIO", password="TU_PASSWORD")
 
-# --- Botones de Encender / Apagar ---
-st.subheader("Encender / Apagar Bomba")
+st.header("Controles - Dispositivos")
 
-col1, col2 = st.columns(2)
+# Luces
+if st.button("Encender luz sala"):
+    publish_message("casa/luz/sala", "ON")
+if st.button("Apagar luz sala"):
+    publish_message("casa/luz/sala", "OFF")
 
-with col1:
-    if st.button("Encender"):
-        publish_message("ON")
-        st.success("Bomba encendida")
+if st.button("Encender luz habitación"):
+    publish_message("casa/luz/habitacion", "ON")
+if st.button("Apagar luz habitación"):
+    publish_message("casa/luz/habitacion", "OFF")
 
-with col2:
-    if st.button("Apagar"):
-        publish_message("OFF")
-        st.error("Bomba apagada")
+# Enchufes
+if st.button("Encender enchufe televisor"):
+    publish_message("casa/enchufe/televisor", "ON")
+if st.button("Apagar enchufe televisor"):
+    publish_message("casa/enchufe/televisor", "OFF")
 
-st.write("---")
-
-# --- Control por texto ---
-st.subheader("Control por texto")
-
-cmd = st.text_input("Escribe 'encender' o 'apagar':")
-
-if st.button("Enviar texto"):
-    text = cmd.lower()
-
-    if "encender" in text:
-        publish_message("ON")
-        st.success("Bomba encendida por texto")
-    elif "apagar" in text:
-        publish_message("OFF")
-        st.error("Bomba apagada por texto")
-    else:
-        st.warning("Comando no válido")
-
-st.write("---")
-
-# --- Control por voz ---
-st.subheader("Control por voz (si tu navegador lo soporta)")
-
-audio = st.audio_input("Habla aquí:")
-
-if audio:
-    st.write("Procesando audio…")
-    text = st.experimental_audio_to_text(audio)
-
-    if text:
-        st.write("Detectado:", text)
-
-        text_l = text.lower()
-
-        if "encender" in text_l:
-            publish_message("ON")
-            st.success("Bomba encendida por voz")
-        elif "apagar" in text_l:
-            publish_message("OFF")
-            st.error("Bomba apagada por voz")
-        else:
-            st.warning("No se detectó un comando válido.")
-
+if st.button("Encender enchufe lámpara"):
+    publish_message("casa/enchufe/lampara", "ON")
+if st.button("Apagar enchufe lámpara"):
+    publish_message("casa/enchufe/lampara", "OFF")
