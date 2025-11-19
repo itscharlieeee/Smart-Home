@@ -1,5 +1,10 @@
-import streamlit as st
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+
 from mqtt_utils import get_sensor_data
+import streamlit as st
+
 
 st.title("📊 Dashboard de Sensores")
 
