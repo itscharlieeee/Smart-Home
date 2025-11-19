@@ -77,7 +77,5 @@ def publish_message(message):
 def get_sensor_data():
     return sensor_data
 
-if "mqtt_started" not in st.session_state:
-    connect_mqtt()
-    st.session_state.mqtt_started = True
+
 
