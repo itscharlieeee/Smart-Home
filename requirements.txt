@@ -1,0 +1,5 @@
+streamlit>=1.18
+paho-mqtt>=1.6.1
+opencv-python-headless>=4.7.0  # opcional, solo si usas detección de foto local
+numpy
+requests
