@@ -1,34 +1,70 @@
 import streamlit as st
-from mqtt_utils import send_command, get_sensor_data
+from mqtt_utils import send_command
 
-st.title("🎛️ Control de la Casa")
+st.title("🎛️ Controles del Sistema")
 
-data = get_sensor_data()
+# ==========================
+# LUCES (equivalente a "bomba")
+# Topic que vamos a usar:
+TOPIC = "casa/luces/bomba"
+# ==========================
 
-st.subheader("💡 Luces")
+st.subheader("Encender/Apagar la bomba")
 
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
-    if st.button("Sala ON"):
-        send_command("casa/luces/sala", "on")
-    if st.button("Sala OFF"):
-        send_command("casa/luces/sala", "off")
+    if st.button("Encender"):
+        send_command(TOPIC, "on")
+        st.success("Bomba encendida")
 
 with col2:
-    if st.button("Cocina ON"):
-        send_command("casa/luces/cocina", "on")
-    if st.button("Cocina OFF"):
-        send_command("casa/luces/cocina", "off")
-
-with col3:
-    if st.button("Habitación ON"):
-        send_command("casa/luces/habitacion", "on")
-    if st.button("Habitación OFF"):
-        send_command("casa/luces/habitacion", "off")
+    if st.button("Apagar"):
+        send_command(TOPIC, "off")
+        st.error("Bomba apagada")
 
 st.write("---")
 
-st.subheader("🪟 Ventana automática (Servo)")
-angle = st.slider("Ángulo", 0, 180, data["ventana"])
-send_command("casa/ventanas", str(angle))
+# -------------------------------
+#  CONTROL POR TEXTO
+# -------------------------------
+st.subheader("Control por texto")
+cmd = st.text_input("Escribe 'encender' o 'apagar'")
+
+if st.button("Enviar texto"):
+    if "encender" in cmd.lower():
+        send_command(TOPIC, "on")
+        st.success("Bomba encendida por texto")
+    elif "apagar" in cmd.lower():
+        send_command(TOPIC, "off")
+        st.error("Bomba apagada por texto")
+    else:
+        st.warning("Comando no válido")
+
+st.write("---")
+
+# -------------------------------
+#  CONTROL POR VOZ
+# -------------------------------
+st.subheader("Control por voz")
+st.write("Haz clic para grabar:")
+
+audio = st.audio_input("Habla aquí")
+
+if audio:
+    try:
+        text = st.experimental_audio_to_text(audio)
+        if text:
+            st.write("Detectado:", text)
+
+            if "encender" in text.lower():
+                send_command(TOPIC, "on")
+                st.success("Bomba encendida por voz")
+
+            elif "apagar" in text.lower():
+                send_command(TOPIC, "off")
+                st.error("Bomba apagada por voz")
+
+    except:
+        st.warning("No se pudo interpretar el audio.")
+
