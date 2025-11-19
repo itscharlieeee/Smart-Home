@@ -66,7 +66,14 @@ else:
     st.write("Casa en modo Normal")
 
 st.subheader("Simulación de ventanas")
-ventana_slider = st.slider("Ángulo de apertura ventana principal", 0, 180, value=int(ventanas.get("Ventana principal") or 0))
+# Obtener valor de ventana principal y convertir a int seguro
+valor_ventana = ventanas.get("Ventana principal")
+try:
+    valor_ventana_int = int(valor_ventana)
+except (TypeError, ValueError):
+    valor_ventana_int = 0
+
+ventana_slider = st.slider("Ángulo de apertura ventana principal", 0, 180, value=valor_ventana_int)
 st.write(f"Ventana principal abierta a {ventana_slider}° (solo visual)")
 
 # ----------------------
