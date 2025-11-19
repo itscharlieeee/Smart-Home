@@ -3,7 +3,7 @@ from mqtt_utils import connect_mqtt
 
 st.set_page_config(page_title="SmartGarden", page_icon="🌱")
 
-st.title("🌱 SmartGarden – Sistema Inteligente de Riego")
+st.title("SmartHome – Sistema Inteligente de Riego")
 st.write("Controla tu jardín con sensores, voz y automatización.")
 
 if "mqtt_started" not in st.session_state:
