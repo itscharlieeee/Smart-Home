@@ -23,18 +23,20 @@ def on_message(client, userdata, msg):
 
 def connect_mqtt():
     client = mqtt.Client()
+
     client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
 
-    client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
-    client.tls_insecure_set(False)
+    client.tls_set()
+    client.tls_insecure_set(True)
 
-    client.on_connect = on_connect
-    client.on_message = on_message
-
-    client.connect(MQTT_BROKER, MQTT_PORT, 60)
-    client.loop_start()
+    try:
+        client.connect(MQTT_BROKER, MQTT_PORT)
+        print("Conectado a MQTT")
+    except Exception as e:
+        print("Error al conectar:", e)
 
     return client
+
 
 mqtt_client = None
 
