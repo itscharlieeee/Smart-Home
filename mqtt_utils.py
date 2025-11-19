@@ -1,72 +1,51 @@
+import os
 import paho.mqtt.client as mqtt
+import ssl
 
-# -------------------------
-# DATOS GLOBALES
-# -------------------------
-data = {
-    "temperature": 0,
-    "light": 0,
-    "soil": 0,
-    "sala": "off",
-    "cocina": "off",
-    "habitacion": "off",
-    "ventana": 0
-}
+MQTT_BROKER = os.getenv("MQTT_BROKER")
+MQTT_PORT = int(os.getenv("MQTT_PORT"))
+MQTT_USER = os.getenv("MQTT_USER")
+MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
+TOPIC_STATUS = os.getenv("TOPIC_STATUS")
+TOPIC_CONTROL = os.getenv("TOPIC_CONTROL")
 
-# -------------------------
-# CALLBACK MQTT
-# -------------------------
+last_message = {"status": "OFF"}
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        client.subscribe(TOPIC_STATUS)
+    else:
+        print("Error de conexión MQTT:", rc)
+
 def on_message(client, userdata, msg):
-    topic = msg.topic
-    payload = msg.payload.decode()
+    last_message["status"] = msg.payload.decode()
 
-    # Sensores
-    if topic == "casa/sensores/temperatura":
-        data["temperature"] = float(payload)
+def connect_mqtt():
+    client = mqtt.Client()
+    client.username_pw_set(MQTT_USER, MQTT_PASSWORD)
 
-    if topic == "casa/sensores/luminosidad":
-        data["light"] = float(payload)
+    client.tls_set(cert_reqs=ssl.CERT_REQUIRED)
+    client.tls_insecure_set(False)
 
-    if topic == "casa/sensores/humedad":
-        data["soil"] = float(payload)
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-    # Luces
-    if topic == "casa/luces/sala":
-        data["sala"] = payload
+    client.connect(MQTT_BROKER, MQTT_PORT, 60)
+    client.loop_start()
 
-    if topic == "casa/luces/cocina":
-        data["cocina"] = payload
+    return client
 
-    if topic == "casa/luces/habitacion":
-        data["habitacion"] = payload
+mqtt_client = None
 
-    # Ventana
-    if topic == "casa/ventanas":
-        data["ventana"] = int(payload)
+def init_mqtt():
+    global mqtt_client
+    if mqtt_client is None:
+        mqtt_client = connect_mqtt()
 
-# -------------------------
-# ENVIAR COMANDOS A WOKWI
-# -------------------------
-def send_command(topic, message):
-    client.publish(topic, message)
+def get_status():
+    init_mqtt()
+    return last_message["status"]
 
-# -------------------------
-# LEER DATOS DESDE STREAMLIT
-# -------------------------
-def get_sensor_data():
-    return data
-
-# -------------------------
-# CONFIGURACIÓN MQTT
-# -------------------------
-client = mqtt.Client()
-client.on_message = on_message
-
-client.connect("broker.hivemq.com", 1883, 60)
-
-client.subscribe("casa/sensores/#")
-client.subscribe("casa/luces/#")
-client.subscribe("casa/ventanas")
-
-client.loop_start()
-
+def send_command(command):
+    init_mqtt()
+    mqtt_client.publish(TOPIC_CONTROL, command)
