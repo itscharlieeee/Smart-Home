@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit as st
 from mqtt_utils import connect_mqtt, get_device_status, get_sensor_data
 
 st.set_page_config(page_title="Smart-Home - Estado", page_icon="🏡")
@@ -20,6 +19,67 @@ luminosidad = int(luminosidad_msgs[0].split(":")[-1]) if luminosidad_msgs else "
 col1, col2 = st.columns(2)
 col1.metric("Temperatura (°C)", temperatura)
 col2.metric("Luminosidad (lux)", luminosidad)
+
+st.subheader("Estado de los dispositivos")
+
+# Obtener estado de luces y enchufes
+luces = {
+    "Sala": get_device_status("casa/luces/sala"),
+    "Habitación": get_device_status("casa/luces/habitacion"),
+    "Cocina": get_device_status("casa/luces/cocina")
+}
+
+enchufes = {
+    "Televisor": get_device_status("casa/enchufe/televisor"),
+    "Lámpara": get_device_status("casa/enchufe/lampara")
+}
+
+ventanas = {
+    "Ventana principal": get_device_status("casa/ventanas")  # valor del servo
+}
+
+st.write("### Luces")
+for nombre, estado in luces.items():
+    st.write(f"{nombre}: {'💡 Encendida' if estado=='on' else '🔌 Apagada'}")
+
+st.write("### Enchufes")
+for nombre, estado in enchufes.items():
+    st.write(f"{nombre}: {'🔌 Encendido' if estado=='on' else '❌ Apagado'}")
+
+st.write("### Ventanas")
+for nombre, valor in ventanas.items():
+    st.write(f"{nombre}: {valor}° abierto" if valor else "❌ Cerrada")
+
+# ----------------------
+# Interactividad nueva
+# ----------------------
+
+st.subheader("Escenas rápidas (simulación visual)")
+
+escena = st.selectbox("Selecciona una escena:", ["Normal", "Modo Noche", "Modo Fiesta"])
+
+if escena == "Modo Noche":
+    st.info("🌙 Escena Modo Noche activada: luces apagadas, ventanas cerradas")
+elif escena == "Modo Fiesta":
+    st.success("🎉 Escena Modo Fiesta activada: luces encendidas, ambiente alegre")
+else:
+    st.write("Casa en modo Normal")
+
+st.subheader("Simulación de ventanas")
+ventana_slider = st.slider("Ángulo de apertura ventana principal", 0, 180, value=int(ventanas.get("Ventana principal") or 0))
+st.write(f"Ventana principal abierta a {ventana_slider}° (solo visual)")
+
+# ----------------------
+# Últimos mensajes
+# ----------------------
+st.subheader("Últimos mensajes del broker")
+ultimo_temp = temperatura_msgs[-5:] if temperatura_msgs else []
+ultimo_luz = luminosidad_msgs[-5:] if luminosidad_msgs else []
+
+for msg in ultimo_temp + ultimo_luz:
+    st.write(msg)
+
+st.button("Actualizar estado")  # solo refresca la página al presionar
 
 st.subheader("Estado de los dispositivos")
 
