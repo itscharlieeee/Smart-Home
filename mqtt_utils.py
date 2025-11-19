@@ -1,9 +1,12 @@
 import paho.mqtt.client as mqtt
 
+# -------------------------
+# DATOS GLOBALES
+# -------------------------
 data = {
     "temperature": 0,
     "light": 0,
-    "soil": 0,                # Si luego quieres agregar humedad real
+    "soil": 0,
     "sala": "off",
     "cocina": "off",
     "habitacion": "off",
@@ -11,14 +14,13 @@ data = {
 }
 
 # -------------------------
-# CALLBACK DE MENSAJES
+# CALLBACK MQTT
 # -------------------------
-
 def on_message(client, userdata, msg):
     topic = msg.topic
     payload = msg.payload.decode()
 
-    # ----- Sensores -----
+    # Sensores
     if topic == "casa/sensores/temperatura":
         data["temperature"] = float(payload)
 
@@ -28,7 +30,7 @@ def on_message(client, userdata, msg):
     if topic == "casa/sensores/humedad":
         data["soil"] = float(payload)
 
-    # ----- Luces -----
+    # Luces
     if topic == "casa/luces/sala":
         data["sala"] = payload
 
@@ -38,27 +40,30 @@ def on_message(client, userdata, msg):
     if topic == "casa/luces/habitacion":
         data["habitacion"] = payload
 
-    # ----- Ventana (servo) -----
+    # Ventana
     if topic == "casa/ventanas":
         data["ventana"] = int(payload)
 
 # -------------------------
-# FUNCIÓN PARA STREAMLIT
+# ENVIAR COMANDOS A WOKWI
 # -------------------------
+def send_command(topic, message):
+    client.publish(topic, message)
 
+# -------------------------
+# LEER DATOS DESDE STREAMLIT
+# -------------------------
 def get_sensor_data():
     return data
 
 # -------------------------
-# CONFIG MQTT
+# CONFIGURACIÓN MQTT
 # -------------------------
-
 client = mqtt.Client()
 client.on_message = on_message
 
 client.connect("broker.hivemq.com", 1883, 60)
 
-# Suscribirse a TODO lo del proyecto
 client.subscribe("casa/sensores/#")
 client.subscribe("casa/luces/#")
 client.subscribe("casa/ventanas")
