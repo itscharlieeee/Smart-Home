@@ -34,7 +34,6 @@ def connect_mqtt(broker="TU_BROKER", port=8883, username=None, password=None):
         client = st.session_state.mqtt_client
     return client
 
-# Publicar mensaje
 def publish(topic, payload):
     client = st.session_state.get("mqtt_client")
     if client:
@@ -42,7 +41,6 @@ def publish(topic, payload):
     else:
         print("El cliente MQTT no está conectado.")
 
-# Suscribirse a un topic
 def subscribe(topic):
     client = st.session_state.get("mqtt_client")
     if client:
@@ -50,4 +48,10 @@ def subscribe(topic):
     else:
         print("El cliente MQTT no está conectado.")
 
-# Wrappers para
+def publish_message(topic, message):
+    publish(topic, message)
+
+def get_sensor_data(topic):
+    subscribe(topic)
+    return st.session_state.get("mqtt_messages", [])
+
