@@ -1,10 +1,17 @@
 import streamlit as st
-from pages.HomeStatus import app as home_app
-from pages.Controls import app as control_app
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), 'pages'))
 
+# ==================== Forzar path para la carpeta pages ====================
+
+pages_path = os.path.join(os.path.dirname(**file**), 'pages')
+if pages_path not in sys.path:
+  sys.path.append(pages_path)
+
+# ==================== Importar páginas ====================
+
+from HomeStatus import app as home_app
+from Controles import app as control_app
 
 # ==================== Configuración de la página ====================
 
@@ -27,9 +34,9 @@ with st.sidebar:
 
 # ==================== Navegación entre páginas ====================
 
-page = st.sidebar.selectbox("Ir a:", ["HomeStatus", "Controls"])
+page = st.sidebar.selectbox("Ir a:", ["Home Status", "Controles"])
 
-if page == "HomeStatus":
+if page == "Home Status":
   home_app(broker, port, topic_sensors, client_id)
-elif page == "Controls":
+elif page == "Controles":
   control_app(broker, port, topic_actuators, client_id)
