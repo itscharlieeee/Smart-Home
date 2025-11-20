@@ -5,8 +5,8 @@ import streamlit as st
 # ------------ CONFIG PERSONAL DE CARLOS ------------
 BROKER = "broker.hivemq.com"
 PORT = 1883
-CLIENT_ID = "streamlit_carlos_app"          # CLIENT ID ÚNICO
-TOPIC_SUBSCRIBE = "carloshome/#"            # TU TOPIC PRIVADO
+CLIENT_ID = "streamlit_carlos_app"
+TOPIC_SUBSCRIBE = "carloshome/#"
 # ---------------------------------------------------
 
 def on_connect(client, userdata, flags, rc):
