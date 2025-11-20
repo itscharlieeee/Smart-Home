@@ -1,5 +1,5 @@
 import streamlit as st
-from pages.homeStatus import app as home_app
+from pages.homestatus import app as home_app
 from pages.controles import app as control_app
 
 # Configuración de la página
@@ -21,7 +21,7 @@ with st.sidebar:
 # Navegación entre páginas
 page = st.sidebar.selectbox("Ir a:", ["Home Status", "Controles"])
 
-if page == "home Status":
+if page == "home status":
     home_app(broker, port, topic_sensors, client_id)
 elif page == "controles":
     control_app(broker, port, topic_actuators, client_id)
