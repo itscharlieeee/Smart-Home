@@ -1,8 +1,8 @@
 import streamlit as st
-from mqtt_utils import send_mqtt_command
+from mqtt_utils import publish_message, get_device_status
 
-def app(broker, port, topic_actuators, client_id):
-st.title("🕹️ Control de Dispositivos")
+def app():
+    st.title("Controles")
 
 ```
 with st.expander("💡 Luces y Actuadores"):
