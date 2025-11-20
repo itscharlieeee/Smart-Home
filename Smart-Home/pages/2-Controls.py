@@ -1,28 +1,20 @@
+# pages/controls.py
 import streamlit as st
-from mqtt_utils import publish_message, connect_mqtt
+from mqtt_utils import publish_message, get_device_status
 
-st.header("Controles de la casa")
+st.header("Controles de la Casa")
 
-# Luces
-st.subheader("Luces")
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("Encender sala"):
-        publish_message("casa/luces/sala", "on")
-    if st.button("Encender habitación"):
-        publish_message("casa/luces/habitacion", "on")
-with col2:
-    if st.button("Apagar sala"):
-        publish_message("casa/luces/sala", "off")
-    if st.button("Apagar habitación"):
-        publish_message("casa/luces/habitacion", "off")
+modo = st.radio("Modo de control:", ["Botones", "Texto", "Voz"])
 
-# Enchufes
-st.subheader("Enchufes")
-col3, col4 = st.columns(2)
-with col3:
-    if st.button("Encender televisor"):
-        publish_message("casa/enchufe/televisor", "on")
-with col4:
-    if st.button("Apagar televisor"):
-        publish_message("casa/enchufe/televisor", "off")
+dispositivos = ["casa/luz/sala", "casa/luz/habitacion", "casa/enchufe/televisor", "casa/enchufe/lampara"]
+
+for dev in dispositivos:
+    estado = get_device_status(dev)
+    col1, col2 = st.columns([2,1])
+    with col1:
+        st.write(f"{dev.split('/')[-1].capitalize()}: {estado}")
+    with col2:
+        if st.button("ON", key=f"{dev}_on", help="Encender", use_container_width=True):
+            publish_message(dev, "ON")
+        if st.button("OFF", key=f"{dev}_off", help="Apagar", use_container_width=True):
+            publish_message(dev, "OFF")
