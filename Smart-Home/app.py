@@ -1,6 +1,6 @@
 import streamlit as st
-from pages.HomeStatus import app as home_app
-from pages.Controles import app as control_app
+from pages.homeStatus import app as home_app
+from pages.controles import app as control_app
 
 # Configuración de la página
 st.set_page_config(page_title="Smart-Home", page_icon="🏠", layout="centered")
@@ -21,8 +21,8 @@ with st.sidebar:
 # Navegación entre páginas
 page = st.sidebar.selectbox("Ir a:", ["Home Status", "Controles"])
 
-if page == "Home Status":
+if page == "home Status":
     home_app(broker, port, topic_sensors, client_id)
-elif page == "Controles":
+elif page == "controles":
     control_app(broker, port, topic_actuators, client_id)
 
