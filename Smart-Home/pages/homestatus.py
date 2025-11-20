@@ -1,5 +1,9 @@
-import streamlit as st
-from ..mqtt_utils import get_sensor_data, connect_mqtt
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from mqtt_utils import get_sensor_data, connect_mqtt
 
 
 def app():
