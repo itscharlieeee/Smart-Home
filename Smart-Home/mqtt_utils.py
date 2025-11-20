@@ -3,8 +3,7 @@ import json
 import time
 
 def get_mqtt_message(broker, port, topic, client_id):
-"""Función para obtener mensaje MQTT (lectura sensores)"""
-message_received = {"received": False, "payload": None}
+    message_received = {"received": False, "payload": None}
 
 ```
 def on_message(client, userdata, message):
