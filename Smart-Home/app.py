@@ -1,9 +1,10 @@
 import streamlit as st
-from pages.homestatus import app as home_app
-from pages.controles import app as control_app
 
-# Configuración de la página
 st.set_page_config(page_title="Smart-Home", page_icon="🏠", layout="centered")
+
+st.title("Smart Home Dashboard")
+
+st.write("Bienvenido. Usa el menú de la izquierda para navegar.")
 
 # Variables de estado
 if 'sensor_data' not in st.session_state:
