@@ -4,7 +4,7 @@ import os
 
 # ==================== Forzar path para la carpeta pages ====================
 
-pages_path = os.path.join(os.path.dirname(**file**), 'pages')
+pages_path = os.path.join(os.path.dirname(__file__), 'pages')
 if pages_path not in sys.path:
   sys.path.append(pages_path)
 
