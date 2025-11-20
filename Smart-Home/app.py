@@ -23,9 +23,9 @@ with st.sidebar:
 
 # ==================== Navegación entre páginas ====================
 
-page = st.sidebar.selectbox("Ir a:", ["Home Status", "Controles"])
+page = st.sidebar.selectbox("Ir a:", ["HomeStatus", "Controls"])
 
-if page == "Home Status":
+if page == "HomeStatus":
   home_app(broker, port, topic_sensors, client_id)
-elif page == "Controles":
+elif page == "Controls":
   control_app(broker, port, topic_actuators, client_id)
