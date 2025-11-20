@@ -1,6 +1,9 @@
 import streamlit as st
 from pages/HomeStatus import app as home_app
 from pages/Controls import app as control_app
+import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), 'pages'))
 
 
 # ==================== Configuración de la página ====================
