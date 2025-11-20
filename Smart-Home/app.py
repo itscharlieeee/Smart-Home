@@ -15,8 +15,8 @@ with st.sidebar:
     st.subheader('⚙️ Configuración de Conexión')
     broker = st.text_input('Broker MQTT', value='broker.mqttdashboard.com')
     port = st.number_input('Puerto', value=1883, min_value=1, max_value=65535)
-    topic_sensors = st.text_input('Tópico Sensores', value='Sensor/THP2')
-    topic_actuators = st.text_input('Tópico Actuadores', value='Invernadero_Daniel')
+    topic_actuators = st.text_input('Tópico Actuadores', value='casa/#')
+    topic_sensors = st.text_input('Tópico Sensores', value='casa/sensores/#')
     client_id = st.text_input('ID del Cliente', value='streamlit_client')
 
 
