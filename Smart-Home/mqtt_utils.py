@@ -10,7 +10,7 @@ import streamlit as st
 BROKER = "broker.hivemq.com" # Broker público de ejemplo
 PORT = 1883
 CLIENT_ID = "streamlit_smart_home_app"
-TOPIC_SUBSCRIBE = "smart-home/#" # Suscripción a todos los tópicos bajo smart-home
+TOPIC_SUBSCRIBE = "smartmec-home/#" # Suscripción a todos los tópicos bajo smart-home
 
 # --- CALLBACKS MQTT ---
 
